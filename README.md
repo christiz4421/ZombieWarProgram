@@ -19,7 +19,7 @@ Character Class
 • 	Includes full Javadoc and inline comments
 
 Files Included
-• 	Character.java, Which is the Abstract base class for all survivors and zombies
+• 	Character.java is Abstract base class for all survivors and zombies
 
 How to Run
 1. 	Clone the repository to your local machine
