@@ -1,6 +1,7 @@
-public class Child extends Survivor {
+public class child extends survivor {
 
-    public Child() {
+    public child() {
         super(20, 2);
     }
+
 }
