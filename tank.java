@@ -1,6 +1,7 @@
-public class Tank extends Zombie {
+public class tank extends zombie {
 
-    public Tank() {
+    public tank() {
         super(150, 20);
     }
+
 }
