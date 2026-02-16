@@ -1,6 +1,7 @@
-public class CommonInfected extends Zombie {
+public class commonInfected extends zombie {
 
-    public CommonInfected() {
+    public commonInfected() {
         super(30, 5);
     }
+
 }
