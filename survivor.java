@@ -7,9 +7,9 @@
  * in the Zombie War simulation. All survivors share basic combat
  * attributes from Character.
  */
-public abstract class Survivor extends Character {
+public abstract class survivor extends Character {
 
-    public Survivor(int health, int attack) {
+    public survivor(int health, int attack) {
         super(health, attack);
     }
 
@@ -17,4 +17,5 @@ public abstract class Survivor extends Character {
     public String toString() {
         return this.getClass().getSimpleName();
     }
+
 }
