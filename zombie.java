@@ -7,9 +7,9 @@
  * in the Zombie War simulation. All zombies share basic combat
  * attributes from Character.
  */
-public abstract class Zombie extends Character {
+public abstract class zombie extends Character {
 
-    public Zombie(int health, int attack) {
+    public zombie(int health, int attack) {
         super(health, attack);
     }
 
@@ -17,4 +17,5 @@ public abstract class Zombie extends Character {
     public String toString() {
         return this.getClass().getSimpleName();
     }
+
 }
