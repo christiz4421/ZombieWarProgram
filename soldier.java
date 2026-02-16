@@ -1,6 +1,7 @@
-public class Soldier extends Survivor {
+public class soldier extends survivor {
 
-    public Soldier() {
+    public soldier() {
         super(100, 10);
     }
+
 }
