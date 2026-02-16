@@ -1,6 +1,7 @@
-public class Teacher extends Survivor {
+public class teacher extends survivor {
 
-    public Teacher() {
+    public teacher() {
         super(50, 5);
     }
+
 }
