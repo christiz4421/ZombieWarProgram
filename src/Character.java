@@ -1,10 +1,12 @@
 public abstract class Character {
     private final String type;
+    private final int id;
     private final int attack;
     private int health;
 
-    protected Character(String type, int health, int attack) {
+    protected Character(String type, int id, int health, int attack) {
         this.type = type;
+        this.id = id;
         this.health = health;
         this.attack = attack;
     }
@@ -25,6 +27,10 @@ public abstract class Character {
             return;
         }
         target.takeDamage(attack);
+    }
+
+    public String getLabel() {
+        return type + " " + id;
     }
 
 }

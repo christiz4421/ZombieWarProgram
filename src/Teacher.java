@@ -1,5 +1,5 @@
 public class Teacher extends Survivor {
-    public Teacher() {
-        super("Teacher", 50, 5);
+    public Teacher(int id) {
+        super("Teacher", id, 50, 5);
     }
 }

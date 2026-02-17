@@ -1,5 +1,5 @@
 public class CommonInfected extends Zombie {
-    public CommonInfected() {
-        super("Common Infected", 30, 5);
+    public CommonInfected(int id) {
+        super("CommonInfected", id, 30, 5);
     }
 }
