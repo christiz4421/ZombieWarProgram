@@ -26,13 +26,15 @@ public class ZombieWarSimulation {
     private Random random = new Random();
 
     /**
-     * Creates a new simulation with the specified number of
-     * survivors and zombies.
-     *
-     * @param numSurvivors the number of survivors to generate
-     * @param numZombies   the number of zombies to generate
+     * Creates a new simulation that randomly generates the number of survivors
+     * and zombies. The specific counts and types are determined using a random
+     * number generator.
      */
-    public ZombieWarSimulation(int numSurvivors, int numZombies) {
+    public ZombieWarSimulation() {
+
+        int numSurvivors = random.nextInt(20) + 1;
+        int numZombies = random.nextInt(20) + 1;
+
         survivors = new Survivor[numSurvivors];
         zombies = new Zombie[numZombies];
 
@@ -63,11 +65,11 @@ public class ZombieWarSimulation {
     }
 
     /**
-     * Randomly generates each zombie as a Common Infected or Tank.
+     * Randomly generates each zombie as a CommonInfected or Tank.
      */
     private void generateZombies() {
         for (int i = 0; i < zombies.length; i++) {
-            // 0 = Common Infected, 1 = Tank
+            // 0 = CommonInfected, 1 = Tank
             int type = random.nextInt(2);
 
             switch (type) {
@@ -83,8 +85,8 @@ public class ZombieWarSimulation {
 
     /**
      * Runs the battle simulation. Survivors attack all zombies, then zombies
-     * attack all survivors. This repeats until either all survivors or all
-     * zombies are dead.
+     * attack all survivors. This repeats until either all of the survivors or
+     * all of the zombies are dead.
      */
     public void run() {
         while (!battleOver()) {
@@ -130,9 +132,9 @@ public class ZombieWarSimulation {
 
     /**
      * Determines if the battle is over. The battle ends when
-     * either all survivors or all zombies are dead.
+     * either all of the survivors or all of the zombies are dead.
      *
-     * @return true if the battle is over, false otherwise
+     * @return true if the battle is over, otherwise return false
      */
     private boolean battleOver() {
         boolean survivorsAlive = false;
