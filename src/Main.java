@@ -1,19 +1,26 @@
 /**
- * Creates a zombie was simulation, runs the battle, and prints a summary report.
+ * The Main class is the entry point for the zombie war simulation.
+ * It creates a simulation, prints an introduction describing the
+ * characters involved, runs the battle, and prints the final outcome.
  */
 public class Main {
 
     public static void main(String[] args) {
 
         /**
-         * Creates a simulation with a specified number of survivors and zombies.
+         * Creates a simulation that randomly generates survivors and zombies.
+         *
          */
-        ZombieWarSimulation simulation = new ZombieWarSimulation(17, 8);
+        ZombieWarSimulation simulation = new ZombieWarSimulation();
 
-        // Run the battle until one side is eliminated
+        // Prints a summary of the survivors and zombies participating.
+        simulation.printIntro();
+
+        // Runs the battle until one side is eliminated.
         simulation.run();
 
-        // Print the summary report
-        simulation.printReport();
+        // Prints the final outcome of the simulation.
+        simulation.printEnding();
     }
 }
+

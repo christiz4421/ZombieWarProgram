@@ -5,17 +5,23 @@
  */
 public abstract class Character {
 
-    /**
-     * The current health of the character.
+    /** The current health of the character.
      * A character is considered dead when its health reaches zero,
      * as determined by the isAlive() method.
      */
     protected int health;
 
-    /**
-     * The amount of damage this character deals when attacking.
+    /** The amount of damage this character deals when attacking.
      */
     protected int attack;
+
+    /** The type name of the character
+     */
+    protected String typeName;
+
+    /** A unique ID assigned within each character type.
+     */
+    protected int id;
 
     /**
      * Creates a character with the specified health and attack values.
@@ -28,6 +34,12 @@ public abstract class Character {
         this.attack = attack;
     }
 
+    /** Returns a formatted label such as "Soldier 1" or "Tank 3".
+     */
+    public String getLabel() {
+        return typeName + " " + id;
+    }
+
     /**
      * Checks whether the character is still alive.
      *
@@ -38,29 +50,32 @@ public abstract class Character {
     }
 
     /**
-     * Attacks another character.
-     * A dead character cannot attack.
-     *
-     * @param target the character being attacked
+     * Attacks another character. If the attack kills the target,
+     * a kill message is printed.
      */
     public void attack(Character target) {
-        // Only living characters can attack
-        if (isAlive()) {
-            target.takeDamage(attack);
+        if (!isAlive() || !target.isAlive()) {
+            return;
+        }
+
+        int before = target.health;
+        target.takeDamage(attack);
+
+        // Print kill log if the target died from this attack
+        if (before > 0 && !target.isAlive()) {
+            System.out.println(getLabel() + " killed " + target.getLabel());
         }
     }
 
     /**
      * Reduces the character's health by the specified amount.
-     * Health will not drop below zero.
+     * Health will not drop below zero
      *
      * @param amount the amount of damage taken
      */
     public void takeDamage(int amount) {
         if (isAlive()) {
             health -= amount;
-
-            // Prevent negative health values
             if (health < 0) {
                 health = 0;
             }
@@ -68,7 +83,7 @@ public abstract class Character {
     }
 
     /**
-     * Gets the character's current health.
+     * Gets the character's current health
      *
      * @return the current health value
      */
@@ -76,12 +91,22 @@ public abstract class Character {
         return health;
     }
 
-    /**
-     * Gets the character's attack power.
+    /** Gets the character's attack power.
      *
      * @return the attack value
      */
     public int getAttack() {
         return attack;
     }
+
+    /**
+     * Returns a readable name for this character that combines its type and unique ID.
+     * Used when printing battle events.
+     */
+    @Override
+    public String toString() {
+        return typeName + " " + id;
+    }
+
 }
+
