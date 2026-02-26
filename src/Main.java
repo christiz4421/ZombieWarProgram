@@ -10,6 +10,9 @@ public class Main {
          */
         ZombieWarSimulation simulation = new ZombieWarSimulation();
 
+        // Print the initial scenario
+        simulation.printScenario();
+
         // Run the battle until one side is eliminated
         simulation.run();
 
