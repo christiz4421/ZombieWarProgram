@@ -7,6 +7,8 @@
 ## Description
 This program simulates a zombie virus outbreak where a group of survivors must fight their way to safety. Each type of survivor and zombie has unique health and attack values that determine how they perform in combat. The simulation randomly generates survivors and zombies, runs a full battle sequence, and reports how many survivors make it out alive.
 
+Release 2.0 expands the simulation with character IDs and detailed battle logs that make the game more dynamic and engaging. 
+
 ## Character Hierarchy
 - `Character` is the top‑level abstract class that contains shared health, attack, and combat behavior  
 - `Survivor` and `Zombie` are abstract subclasses that group related character types  
@@ -29,13 +31,18 @@ This program simulates a zombie virus outbreak where a group of survivors must f
 - Zombies attack all survivors  
 - Dead characters do not participate  
 - Loop continues until one side is eliminated  
-- Final report shows how many survivors reach safety  
+- Final report shows how many survivors reach safety
+
+## What's New in Release 2.0
+Release 2.0 introduces several improvements that make the simulation more informative and easier to follow:
+- Unique character IDs for all types of survivors and zombies
+- Detailed kill log showing which character killed which opponent
 
 ## Files Included
 - `Character.java`: Top‑level abstract base class  
 - `Survivor.java` and `Zombie.java`: Abstract subclasses  
-- Survivor types: `Soldier`, `Teacher`, `Child`  
-- Zombie types: `CommonInfected`, `Tank`  
+- `Soldier`, `Teacher`, `Child`: Survivor types 
+- `CommonInfected`, `Tank`: Zombie types 
 - `ZombieWarSimulation.java`: Handles the simulation logic and battle loop  
 - `Main.java`: Entry point that runs the program  
 
@@ -45,5 +52,4 @@ This program simulates a zombie virus outbreak where a group of survivors must f
 3. Run the main program  
 
 ## Status
-Release 1.0 is complete and fully functional.
-
+Release 2.0 is complete and includes character IDs and detailed battle logs.
