@@ -36,6 +36,11 @@ public class ZombieWarSimulation {
     private int[] zombieTypeIndex;
 
     /**
+     * Weapon cache that survivors choose from
+     */
+    private Weapon[] weaponCache;
+
+    /**
      * Creates a new simulation that randomly generates the number of survivors
      * and zombies. The specific counts and types are determined using a random
      * number generator.
@@ -52,6 +57,9 @@ public class ZombieWarSimulation {
 
         generateSurvivors();
         generateZombies();
+
+        generateWeaponCache();
+        assignWeaponsToSurvivors();
     }
 
     /**
@@ -103,6 +111,30 @@ public class ZombieWarSimulation {
     }
 
     /**
+     * Randomly generates a weapon cache.
+     * The cache can include duplicate weapons.
+     */
+    private void generateWeaponCache() {
+        // 5 to 10 weapons
+        int cacheSize = random.nextInt(6) + 5;
+        weaponCache = new Weapon[cacheSize];
+
+        for (int i = 0; i < weaponCache.length; i++) {
+            weaponCache[i] = WeaponGenerator.getRandomWeapon(random);
+        }
+    }
+
+    /**
+     * Assigns each survivor a random weapon from the weapon cache.
+     */
+    private void assignWeaponsToSurvivors() {
+        for (Survivor survivor : survivors) {
+            Weapon weapon = weaponCache[random.nextInt(weaponCache.length)];
+            survivor.setWeapon(weapon);
+        }
+    }
+
+    /**
      * Runs the battle simulation. Survivors attack all zombies, then zombies
      * attack all survivors. This repeats until either all of the survivors or
      * all of the zombies are dead.
@@ -124,17 +156,32 @@ public class ZombieWarSimulation {
                 continue;
             }
 
-            //Prints the survivor's attack and if they killed any zombies
-             System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
-                    + " attacks all zombies!"); 
+            // Prints the survivor's attack and if they killed any zombies
+            System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
+                    + " attacks all zombies!");
+
             for (int j = 0; j < zombies.length; j++) {
                 Zombie zombie = zombies[j];
                 if (zombie.isAlive()) {
+
+                    // Survivor attacks using their assigned weapon
                     survivor.attack(zombie);
+
                     if (!zombie.isAlive()) {
+                        // Include the weapon used in the kill message
+                        String weaponName = (survivor.getWeapon() != null)
+                                ? survivor.getWeapon().getName()
+                                : "no weapon";
+
                         System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
-                                + " killed " + zombie.getClass().getSimpleName() + " " + zombieTypeIndex[j]);
+                                + " killed " + zombie.getClass().getSimpleName() + " " + zombieTypeIndex[j]
+                                + " with the " + weaponName);
                         System.out.println();
+
+                        // Stop printing more attacks once the battle is over
+                        if (battleOver()) {
+                            return;
+                        }
                     }
                 }
             }
@@ -151,8 +198,8 @@ public class ZombieWarSimulation {
                 continue;
             }
 
-            //Prints the zombie's attack and if they killed any survivors
-             System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
+            // Prints the zombie's attack and if they killed any survivors
+            System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
                     + " attacks all survivors!");
             for (int j = 0; j < survivors.length; j++) {
                 Survivor survivor = survivors[j];
@@ -162,6 +209,10 @@ public class ZombieWarSimulation {
                         System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
                                 + " killed " + survivor.getClass().getSimpleName() + " " + survivorTypeIndex[j]);
                         System.out.println();
+                        // Stop printing more attacks once the battle is over
+                        if (battleOver()) {
+                            return;
+                        }
                     }
                 }
             }
@@ -170,7 +221,7 @@ public class ZombieWarSimulation {
 
     /**
      * Determines if the battle is over. The battle ends when
-     * either all of the survivors or all of the zombies are dead.
+     * either all the survivors or all of the zombies are dead.
      *
      * @return true if the battle is over, otherwise return false
      */
