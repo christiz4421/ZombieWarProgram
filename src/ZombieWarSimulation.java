@@ -43,7 +43,7 @@ public class ZombieWarSimulation {
     public ZombieWarSimulation() {
 
         int numSurvivors = random.nextInt(11) + 5;  // 5 to 15 survivors
-        int numZombies = random.nextInt(10) + 1;    // 1 to 10 zombies
+        int numZombies = random.nextInt(8) + 23;    // 23 to 30 zombies
 
         survivors = new Survivor[numSurvivors];
         zombies = new Zombie[numZombies];
@@ -52,6 +52,47 @@ public class ZombieWarSimulation {
 
         generateSurvivors();
         generateZombies();
+        giveWeapons();
+    }
+
+    //gives each survivor a random weapon
+    private void giveWeapons() {
+        Weapon[] weapons = createWeapons(survivors.length);
+        for (int i = 0; i < survivors.length; i++) {
+            survivors[i].setWeapon(weapons[i]);
+        }
+    }
+
+    //creates a random weapon array
+    private Weapon[] createWeapons(int count) {
+        Weapon[] weapons = new Weapon[count];
+        for (int i = 0; i < count; i++) {
+            int roll = random.nextInt(7);
+            switch (roll) {
+                case 0:
+                    weapons[i] = new Shotgun();
+                    break;
+                case 1:
+                    weapons[i] = new SubmachineGun();
+                    break;
+                case 2:
+                    weapons[i] = new AssaultRifle();
+                    break;
+                case 3:
+                    weapons[i] = new Pistol();
+                    break;
+                case 4:
+                    weapons[i] = new Axe();
+                    break;
+                case 5:
+                    weapons[i] = new Crowbar();
+                    break;
+                case 6:
+                    weapons[i] = new FryingPan();
+                    break;
+            }
+        }
+        return weapons;
     }
 
     /**
@@ -124,16 +165,14 @@ public class ZombieWarSimulation {
                 continue;
             }
 
-            //Prints the survivor's attack and if they killed any zombies
-             System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
-                    + " attacks all zombies!"); 
             for (int j = 0; j < zombies.length; j++) {
                 Zombie zombie = zombies[j];
                 if (zombie.isAlive()) {
                     survivor.attack(zombie);
                     if (!zombie.isAlive()) {
                         System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
-                                + " killed " + zombie.getClass().getSimpleName() + " " + zombieTypeIndex[j]);
+                                + " killed " + zombie.getClass().getSimpleName() + " " + zombieTypeIndex[j]
+                                + " with " + survivor.getWeapon().getClass().getSimpleName());
                         System.out.println();
                     }
                 }
@@ -151,9 +190,6 @@ public class ZombieWarSimulation {
                 continue;
             }
 
-            //Prints the zombie's attack and if they killed any survivors
-             System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
-                    + " attacks all survivors!");
             for (int j = 0; j < survivors.length; j++) {
                 Survivor survivor = survivors[j];
                 if (survivor.isAlive()) {
@@ -236,6 +272,7 @@ public class ZombieWarSimulation {
                 + teachers + " teachers, "
                 + soldiers + " soldiers)");
         System.out.println();
+        
         System.out.println("But there are " + zombies.length
                 + " zombies waiting for them ("
                 + commonInfected + " common infected, "
