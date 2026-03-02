@@ -51,7 +51,7 @@ public class Weapon {
      * @return true if the attack hits and false if it misses
      */
     public boolean hits(Random random) {
-        // Roll a number from 0.0 to 1.0 and compare it to accuracy
-        return random.nextDouble() < accuracy;
+        // Determine if the attack hits based on the weapon's accuracy
+        return random.nextDouble() < getAccuracy();
     }
 }

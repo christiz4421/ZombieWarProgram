@@ -12,4 +12,9 @@ public abstract class Zombie extends Character {
     public Zombie(int health, int attack) {
         super(health, attack);
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }
