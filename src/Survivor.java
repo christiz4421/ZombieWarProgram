@@ -9,8 +9,19 @@
  */
 public abstract class Survivor extends Character {
 
+    protected Weapon weapon;
+
     public Survivor(int health, int attack) {
         super(health, attack);
+        this.weapon = new Unarmed();
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
     }
 
     @Override
