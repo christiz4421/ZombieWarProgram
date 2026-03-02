@@ -48,7 +48,7 @@ public class ZombieWarSimulation {
     public ZombieWarSimulation() {
 
         int numSurvivors = random.nextInt(11) + 5;  // 5 to 15 survivors
-        int numZombies = random.nextInt(10) + 1;    // 1 to 10 zombies
+        int numZombies = random.nextInt(8) + 23;    // 23 to 30 zombies
 
         survivors = new Survivor[numSurvivors];
         zombies = new Zombie[numZombies];
@@ -156,10 +156,6 @@ public class ZombieWarSimulation {
                 continue;
             }
 
-            // Prints the survivor's attack and if they killed any zombies
-            System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
-                    + " attacks all zombies!");
-
             for (int j = 0; j < zombies.length; j++) {
                 Zombie zombie = zombies[j];
                 if (zombie.isAlive()) {
@@ -197,10 +193,7 @@ public class ZombieWarSimulation {
             if (!zombie.isAlive()) {
                 continue;
             }
-
-            // Prints the zombie's attack and if they killed any survivors
-            System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
-                    + " attacks all survivors!");
+         
             for (int j = 0; j < survivors.length; j++) {
                 Survivor survivor = survivors[j];
                 if (survivor.isAlive()) {
