@@ -1,8 +1,11 @@
 import java.util.Random;
 
 /**
- * Manages the setup and execution of the zombie war scenario. It generates survivors
- * and zombies, runs the battle, and reports the outcome once the fighting has ended.
+ * Manages the setup and execution of the zombie war scenario.
+ *
+ * Randomly generates survivors and zombies, runs the battle
+ * until one side is eliminated, and prints a summary report
+ * showing how many survivors made it to safety.
  */
 public class ZombieWarSimulation {
 
@@ -16,85 +19,125 @@ public class ZombieWarSimulation {
      */
     private Zombie[] zombies;
 
-    private int numSurvivors;
-    private int numZombies;
-
     /**
-     * Random number generator used to assign random survivor
-     * and zombie types.
+     * Random number generator that is used to assign random types
+     * of survivors and zombies.
      */
     private Random random = new Random();
 
     /**
+     * Index for each survivor based on their type (e.g., Soldier 0, Soldier 1).
+     */
+    private int[] survivorTypeIndex;
+
+    /**
+     * Index for each zombie based on their type (e.g., Tank 0, Tank 1).
+     */
+    private int[] zombieTypeIndex;
+
+    /**
+     * Weapon cache that survivors choose from
+     */
+    private Weapon[] weaponCache;
+
+    /**
      * Creates a new simulation that randomly generates the number of survivors
      * and zombies. The specific counts and types are determined using a random
-     * number generator. Each character is assigned a type
-     * and a unique ID.
+     * number generator.
      */
     public ZombieWarSimulation() {
-        int numSurvivors = random.nextInt(20) + 1;
-        int numZombies = random.nextInt(20) + 1;
-        this.numSurvivors = numSurvivors;
-        this.numZombies = numZombies;
+
+        int numSurvivors = random.nextInt(11) + 5;  // 5 to 15 survivors
+        int numZombies = random.nextInt(10) + 1;    // 1 to 10 zombies
 
         survivors = new Survivor[numSurvivors];
         zombies = new Zombie[numZombies];
+        survivorTypeIndex = new int[numSurvivors];
+        zombieTypeIndex = new int[numZombies];
 
         generateSurvivors();
         generateZombies();
+
+        generateWeaponCache();
+        assignWeaponsToSurvivors();
     }
 
     /**
-     * Randomly generates each survivor as a Child, Teacher,
-     * or Soldier. Each survivor is assigned a unique ID based
-     * on its position in the array.
+     * Randomly generates each survivor as a Child, Teacher, or Soldier.
+     * Odds: 20% Child, 50% Teacher, 30% Soldier
      */
     private void generateSurvivors() {
+        int childCount = 0, teacherCount = 0, soldierCount = 0;
+
         for (int i = 0; i < survivors.length; i++) {
+            int roll = random.nextInt(100);
 
-            // 0 = Child, 1 = Teacher, 2 = Soldier
-            int type = random.nextInt(3);
-
-            switch (type) {
-                case 0:
-                    survivors[i] = new Child(i);
-                    break;
-                case 1:
-                    survivors[i] = new Teacher(i);
-                    break;
-                case 2:
-                    survivors[i] = new Soldier(i);
-                    break;
+            if (roll < 20) {
+                // Child
+                survivors[i] = new Child();
+                survivorTypeIndex[i] = childCount++;
+            } else if (roll < 70) {
+                // Teacher
+                survivors[i] = new Teacher();
+                survivorTypeIndex[i] = teacherCount++;
+            } else {
+                // Soldier
+                survivors[i] = new Soldier();
+                survivorTypeIndex[i] = soldierCount++;
             }
         }
     }
 
     /**
-     * Randomly generates each zombie as either a CommonInfected
-     * or a Tank. Each zombie is assigned a unique ID based on
-     * its position in the array.
+     * Randomly generates each zombie as a CommonInfected or Tank.
+     * Odds: 65% CommonInfected, 35% Tank
      */
     private void generateZombies() {
+        int commonCount = 0, tankCount = 0;
+
         for (int i = 0; i < zombies.length; i++) {
+            int roll = random.nextInt(100);
 
-            // 0 = Common Infected, 1 = Tank
-            int type = random.nextInt(2);
-
-            switch (type) {
-                case 0:
-                    zombies[i] = new CommonInfected(i);
-                    break;
-                case 1:
-                    zombies[i] = new Tank(i);
-                    break;
+            if (roll < 65) {
+                // CommonInfected
+                zombies[i] = new CommonInfected();
+                zombieTypeIndex[i] = commonCount++;
+            } else {
+                // Tank
+                zombies[i] = new Tank();
+                zombieTypeIndex[i] = tankCount++;
             }
         }
     }
 
     /**
-     * Runs the battle simulation. Survivors attack all zombies,
-     * then zombies attack all survivors. This repeats until either all
-     * of the survivors or all of the zombies are dead.
+     * Randomly generates a weapon cache.
+     * The cache can include duplicate weapons.
+     */
+    private void generateWeaponCache() {
+        // 5 to 10 weapons
+        int cacheSize = random.nextInt(6) + 5;
+        weaponCache = new Weapon[cacheSize];
+
+        for (int i = 0; i < weaponCache.length; i++) {
+            weaponCache[i] = WeaponGenerator.getRandomWeapon(random);
+        }
+    }
+
+    /**
+     * Assigns each survivor a random weapon from the weapon cache.
+     */
+    private void assignWeaponsToSurvivors() {
+        for (Survivor survivor : survivors) {
+            Weapon weapon = weaponCache[random.nextInt(weaponCache.length)];
+            survivor.setWeapon(weapon);
+        }
+    }
+
+    /**
+     * Runs the battle simulation. Survivors attack all zombies, then zombies
+     * attack all survivors. This repeats until either all of the survivors or
+     * all of the zombies are dead.
      */
     public void run() {
         while (!battleOver()) {
@@ -104,22 +147,41 @@ public class ZombieWarSimulation {
     }
 
     /**
-     * Makes each living survivor attack every living zombie.
-     * Prints a kill message when a zombie dies.
+     * Makes every living survivor attack every living zombie.
      */
     private void survivorsAttackAllZombies() {
-        for (Survivor survivor : survivors) {
-            // Dead survivors are unable to attack
+        for (int i = 0; i < survivors.length; i++) {
+            Survivor survivor = survivors[i];
             if (!survivor.isAlive()) {
                 continue;
             }
 
-            for (Zombie zombie : zombies) {
+            // Prints the survivor's attack and if they killed any zombies
+            System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
+                    + " attacks all zombies!");
+
+            for (int j = 0; j < zombies.length; j++) {
+                Zombie zombie = zombies[j];
                 if (zombie.isAlive()) {
+
+                    // Survivor attacks using their assigned weapon
                     survivor.attack(zombie);
 
                     if (!zombie.isAlive()) {
-                        System.out.println(" " + survivor + " killed " + zombie);
+                        // Include the weapon used in the kill message
+                        String weaponName = (survivor.getWeapon() != null)
+                                ? survivor.getWeapon().getName()
+                                : "no weapon";
+
+                        System.out.println(survivor.getClass().getSimpleName() + " " + survivorTypeIndex[i]
+                                + " killed " + zombie.getClass().getSimpleName() + " " + zombieTypeIndex[j]
+                                + " with the " + weaponName);
+                        System.out.println();
+
+                        // Stop printing more attacks once the battle is over
+                        if (battleOver()) {
+                            return;
+                        }
                     }
                 }
             }
@@ -128,19 +190,29 @@ public class ZombieWarSimulation {
 
     /**
      * Makes every living zombie attack every living survivor.
-     * Prints a kill message when a survivor dies.
      */
     private void zombiesAttackAllSurvivors() {
-        for (Zombie zombie : zombies) {
+        for (int i = 0; i < zombies.length; i++) {
+            Zombie zombie = zombies[i];
             if (!zombie.isAlive()) {
-                continue; // Dead zombies cannot attack
+                continue;
             }
 
-            for (Survivor survivor : survivors) {
+            // Prints the zombie's attack and if they killed any survivors
+            System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
+                    + " attacks all survivors!");
+            for (int j = 0; j < survivors.length; j++) {
+                Survivor survivor = survivors[j];
                 if (survivor.isAlive()) {
                     zombie.attack(survivor);
                     if (!survivor.isAlive()) {
-                        System.out.println(" " + zombie + " killed " + survivor);
+                        System.out.println(zombie.getClass().getSimpleName() + " " + zombieTypeIndex[i]
+                                + " killed " + survivor.getClass().getSimpleName() + " " + survivorTypeIndex[j]);
+                        System.out.println();
+                        // Stop printing more attacks once the battle is over
+                        if (battleOver()) {
+                            return;
+                        }
                     }
                 }
             }
@@ -148,9 +220,10 @@ public class ZombieWarSimulation {
     }
 
     /**
-     * Determines if the battle is over. The battle ends when either all of the
-     * survivors or all of the zombies are dead.
-     * @return true if the battle is over, false otherwise
+     * Determines if the battle is over. The battle ends when
+     * either all the survivors or all of the zombies are dead.
+     *
+     * @return true if the battle is over, otherwise return false
      */
     private boolean battleOver() {
         boolean survivorsAlive = false;
@@ -172,54 +245,52 @@ public class ZombieWarSimulation {
     }
 
     /**
-     * Prints an introduction summarizing the number and types of survivors and
-     * zombies participating in the simulation.
+     * Prints a summary report that includes the number of survivors generated,
+     * the number of zombies generated, and how many survivors made it to safety.
      */
-    public void printIntro() {
-        int children = 0, teachers = 0, soldiers = 0;
-        int infected = 0, tanks = 0;
+    public void printReport() {
+        int alive = 0;
 
+        for (Survivor survivor : survivors) {
+            if (survivor.isAlive()) {
+                alive++;
+            }
+        }
+
+        if (alive == 0) {
+            System.out.println("None of the survivors made it.");
+        } else {
+            System.out.println("It seems " + alive + " have made it to safety.");
+        }
+    }
+
+    /**
+     * Prints the initial scenario before the battle begins.
+     */
+    public void printScenario() {
+        int children = 0, teachers = 0, soldiers = 0;
         for (Survivor survivor : survivors) {
             if (survivor instanceof Child) children++;
             else if (survivor instanceof Teacher) teachers++;
             else if (survivor instanceof Soldier) soldiers++;
         }
 
+        int commonInfected = 0, tanks = 0;
         for (Zombie zombie : zombies) {
-            if (zombie instanceof CommonInfected) infected++;
+            if (zombie instanceof CommonInfected) commonInfected++;
             else if (zombie instanceof Tank) tanks++;
         }
 
-        System.out.println("We have " + survivors.length +
-                " survivors trying to make it to safety (" +
-                children + " children, " +
-                teachers + " teachers, " +
-                soldiers + " soldiers)");
-
-        System.out.println("But there are " + zombies.length +
-                " zombies waiting for them (" +
-                infected + " common infected, " +
-                tanks + " tanks)");
-    }
-
-    /**
-     * Prints a message indicating whether any survivors successfully made it
-     * through the battle.
-     */
-    public void printEnding() {
-        boolean anyAlive = false;
-
-        for (Survivor survivor : survivors) {
-            if (survivor.isAlive()) {
-                anyAlive = true;
-                break;
-            }
-        }
-
-        if (!anyAlive) {
-            System.out.println("None of the survivors made it.");
-        } else {
-            System.out.println("Some survivors made it to safety.");
-        }
+        System.out.println("We have " + survivors.length
+                + " survivors trying to make it to safety ("
+                + children + " children, "
+                + teachers + " teachers, "
+                + soldiers + " soldiers)");
+        System.out.println();
+        System.out.println("But there are " + zombies.length
+                + " zombies waiting for them ("
+                + commonInfected + " common infected, "
+                + tanks + " tanks)");
+        System.out.println();
     }
 }
