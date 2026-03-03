@@ -9,6 +9,8 @@ This program simulates a zombie virus outbreak where a group of survivors must f
 
 Release 2.0 expands the simulation with character IDs and detailed battle logs that make the game more dynamic and engaging. 
 
+Release 3.0 adds a full weapon system that increases variety in combat and makes each simulation run less predictable. 
+
 ## Character Hierarchy
 - `Character` is the top‑level abstract class that contains shared health, attack, and combat behavior  
 - `Survivor` and `Zombie` are abstract subclasses that group related character types  
@@ -38,11 +40,23 @@ Release 2.0 introduces several improvements that make the simulation more inform
 - Unique character IDs for all types of survivors and zombies
 - Detailed kill log showing which character killed which opponent
 
+## What's New in Release 3.0
+Release 3.0 adds a full weapon system to the simulation:
+- Randomly generated weapon cache at the start of each run
+- Survivors are assigned a random weapon
+- Each weapon has its own damage and accuracy values
+- Updated combat logic so survivors attack using their assigned weapon
+- Missed attacks are possible based on weapon accuracy
+- Battle log now shows which weapon was used to kill each zombie
+- Weapons include: Shotgun, Submachine Gun, Assault Rifle, Pistol, Axe, Crowbar, and Frying Pan 
+
 ## Files Included
 - `Character.java`: Top‑level abstract base class  
 - `Survivor.java` and `Zombie.java`: Abstract subclasses  
 - `Soldier`, `Teacher`, `Child`: Survivor types 
-- `CommonInfected`, `Tank`: Zombie types 
+- `CommonInfected`, `Tank`: Zombie types
+- `Weapon.java`: Provides the basic structure for weapon types, including their damage and accuracy
+-  `WeaponGenerator.java`: Creates the random weapon cache for each simulation run
 - `ZombieWarSimulation.java`: Handles the simulation logic and battle loop  
 - `Main.java`: Entry point that runs the program  
 
@@ -52,4 +66,4 @@ Release 2.0 introduces several improvements that make the simulation more inform
 3. Run the main program  
 
 ## Status
-Release 2.0 is complete and includes character IDs and detailed battle logs.
+Release 3.0 is complete and includes the new weapon system, updated combat logic, and expanded battle logs.
