@@ -46,4 +46,24 @@ public class ZombieWarProgramTest {
     public void testMainRuns() {
         Main.main(new String[0]);
     }
+    // Test that checks Survivor.attack logic when no weapon is assigned.
+    @Test
+    public void testSurvivorAttackWithoutWeaponUsesBaseDamage() {
+    Survivor survivor = new Teacher();     // base attack = 5.
+    Zombie zombie = new CommonInfected();  // health = 30.
+
+    survivor.setWeapon(null);              // ensure no weapon.
+    survivor.attack(zombie);
+
+    assertEquals(25, zombie.getHealth());  // 30 - 5 = 25.
+    }
+
+    // Test to verify core character mechanic and ensures that takeDamage never goes below zero.
+    @Test
+    public void testDamageDoesNotGoBelowZero() {
+    Zombie zombie = new CommonInfected(); // 30 HP
+    zombie.takeDamage(100);               // Overkill
+    assertEquals(0, zombie.getHealth());
+    assertFalse(zombie.isAlive());
+    }
 }
